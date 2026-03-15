@@ -164,10 +164,8 @@ Import **`docs/MiniErp-Postman-Collection.json`** into Postman.
 | `db/sp-create-sale.sql` | `Sp_CreateSale` (sale + items + stock in one transaction; sale number `S-{SaleId}`) |
 | `db/seed-data.sql` | Roles, users (dummy hashes), products, customers, opening stock, sample sales |
 | `db/seed-update-passwords.sql` | Updates user hashes after you get them from **POST /api/auth/hash** |
-| `db/add-password-reset-table.sql` | Use only if you have an old DB without `PasswordResetTokens` |
+
 
 ---
 
-## ER diagram
-
-See **`er-diagram.mmd`** (Mermaid) for the schema overview.
+.
