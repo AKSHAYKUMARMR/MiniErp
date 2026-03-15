@@ -1,0 +1,37 @@
+# Build
+[Db]bin/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.cache
+*.vspscc
+*.vssscc
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+
+# Rider
+.idea/
+*.sln.iml
+
+# User-specific (optional: uncomment to avoid committing local settings)
+# MiniErp/appsettings.Development.json
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,401 @@
+{
+  "info": {
+    "name": "MiniErp API",
+    "description": "MiniErp .NET 8 API. Set baseUrl (e.g. https://localhost:7001). Run Auth > Login then use protected endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{accessToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://localhost:7089" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }",
+                  "if (json.refreshToken) { pm.collectionVariables.set('refreshToken', json.refreshToken); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin@123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }",
+                  "if (json.refreshToken) { pm.collectionVariables.set('refreshToken', json.refreshToken); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/refresh"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/logout"
+          }
+        },
+        {
+          "name": "Me (current user)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/forgot-password"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<reset token from forgot-password>\",\n  \"newPassword\": \"newPassword123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/reset-password"
+          }
+        },
+        {
+          "name": "Hash (dev)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "\"admin@123\"" },
+            "url": "{{baseUrl}}/api/auth/hash"
+          }
+        },
+        {
+          "name": "Verify (dev)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"admin@123\",\n  \"hash\": \"<hash from seed or hash endpoint>\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/verify"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/products" }
+        },
+        {
+          "name": "Get Product by Id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/products/1" }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"SKU001\",\n  \"name\": \"Product One\",\n  \"description\": \"Description\",\n  \"unitPrice\": 10.50,\n  \"reorderLevel\": 5\n}"
+            },
+            "url": "{{baseUrl}}/api/products"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Product One Updated\",\n  \"description\": \"Updated description\",\n  \"unitPrice\": 12.00,\n  \"reorderLevel\": 10,\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/products/1"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/products/1" }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Get All Customers",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/customers" }
+        },
+        {
+          "name": "Get Customer by Id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/customers/1" }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CUST001\",\n  \"name\": \"Acme Corp\",\n  \"email\": \"contact@acme.com\",\n  \"phone\": \"+1234567890\",\n  \"billingAddress\": \"123 Main St\",\n  \"shippingAddress\": \"123 Main St\"\n}"
+            },
+            "url": "{{baseUrl}}/api/customers"
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corp Updated\",\n  \"email\": \"contact@acme.com\",\n  \"phone\": \"+1234567890\",\n  \"billingAddress\": \"123 Main St\",\n  \"shippingAddress\": \"456 Other St\",\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/customers/1"
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/customers/1" }
+        }
+      ]
+    },
+    {
+      "name": "Sales",
+      "item": [
+        {
+          "name": "Create Sale",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"saleDate\": \"2025-03-07T12:00:00Z\",\n  \"items\": [\n    { \"productId\": 1, \"quantity\": 2, \"unitPrice\": 10.50 }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/sales"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Total Sales Today",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/total-sales-today" }
+        },
+        {
+          "name": "Revenue by Range",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/revenue?from=2025-01-01&to=2025-12-31",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "reports", "revenue" ],
+              "query": [
+                { "key": "from", "value": "2025-01-01" },
+                { "key": "to", "value": "2025-12-31" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Top Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/top-products?from=2025-01-01&to=2025-12-31&top=10",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "reports", "top-products" ],
+              "query": [
+                { "key": "from", "value": "2025-01-01" },
+                { "key": "to", "value": "2025-12-31" },
+                { "key": "top", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Top Customers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/top-customers?from=2025-01-01&to=2025-12-31&top=10",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "reports", "top-customers" ],
+              "query": [
+                { "key": "from", "value": "2025-01-01" },
+                { "key": "to", "value": "2025-12-31" },
+                { "key": "top", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Low Stock Products",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/low-stock-products" }
+        },
+        {
+          "name": "Stock Summary",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/stock-summary" }
+        },
+        {
+          "name": "Monthly Sales Trend",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/monthly-sales-trend" }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/users" }
+        },
+        {
+          "name": "Get User by Id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/users/1" }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"SecurePass123\",\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/users"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"updated@example.com\",\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/users/1"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/users/1" }
+        },
+        {
+          "name": "Get User Roles",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/users/1/roles" }
+        },
+        {
+          "name": "Assign Role to User",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/users/1/roles/1" }
+        },
+        {
+          "name": "Remove Role from User",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/users/1/roles/1" }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/roles" }
+        },
+        {
+          "name": "Get Role by Id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/roles/1" }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Manager\"\n}" },
+            "url": "{{baseUrl}}/api/roles"
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Manager Updated\"\n}" },
+            "url": "{{baseUrl}}/api/roles/1"
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/roles/1" }
+        }
+      ]
+    }
+  ]
+}

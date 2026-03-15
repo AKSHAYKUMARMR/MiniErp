@@ -1,0 +1,20 @@
+# Normalize line endings: auto-detect text files and normalize to CRLF on Windows
+* text=auto eol=crlf
+
+# Explicitly mark text files
+*.cs text diff=csharp
+*.csproj text
+*.sln text
+*.json text
+*.md text
+*.sql text
+*.mmd text
+
+# Denote binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.dll binary
+*.exe binary
